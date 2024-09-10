@@ -34,8 +34,8 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnProfile = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         btnManageHalls = new javax.swing.JButton();
         btnMaintainSch = new javax.swing.JButton();
@@ -89,13 +89,23 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\user\\Downloads\\log-out-24.png")); // NOI18N
 
-        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\Users\\user\\Downloads\\HomePage-24.png")); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\Users\\user\\Downloads\\Profile-24.png")); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jButton2.setText("Profile");
+        btnProfile.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        btnProfile.setText("Profile");
+        btnProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProfileActionPerformed(evt);
+            }
+        });
 
-        jButton3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jButton3.setText("Log Out");
+        btnLogout.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        btnLogout.setText("Log Out");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -108,8 +118,8 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnProfile)
+                    .addComponent(btnLogout))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -117,11 +127,11 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2)
+                    .addComponent(btnProfile)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3)
+                    .addComponent(btnLogout)
                     .addComponent(jLabel4))
                 .addContainerGap(8, Short.MAX_VALUE))
         );
@@ -130,6 +140,11 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
 
         btnManageHalls.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btnManageHalls.setText("Manage Halls");
+        btnManageHalls.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageHallsActionPerformed(evt);
+            }
+        });
 
         btnMaintainSch.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btnMaintainSch.setText("Manitenance Schedule");
@@ -141,6 +156,11 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
 
         btnAvailablityInfo.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btnAvailablityInfo.setText("Availability Info");
+        btnAvailablityInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAvailablityInfoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -216,8 +236,32 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMaintainSchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaintainSchActionPerformed
-        // TODO add your handling code here:
+        Scheduler_HallMaintenance maintenance = new Scheduler_HallMaintenance();
+        maintenance.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnMaintainSchActionPerformed
+
+    private void btnAvailablityInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvailablityInfoActionPerformed
+        Scheduler_HallAvailability availablityInfo = new Scheduler_HallAvailability();
+        availablityInfo.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnAvailablityInfoActionPerformed
+
+    private void btnManageHallsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageHallsActionPerformed
+        Scheduler_ManageHalls managehalls = new Scheduler_ManageHalls();
+        managehalls.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnManageHallsActionPerformed
+
+    private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
+        Scheduler_Profile profile = new Scheduler_Profile();
+        profile.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnProfileActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -256,10 +300,10 @@ public class Scheduler_HomePage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvailablityInfo;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnMaintainSch;
     private javax.swing.JButton btnManageHalls;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnProfile;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

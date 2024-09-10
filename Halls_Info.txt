@@ -1,0 +1,4 @@
+
+H01;Auditorium;1000;300.0
+H02;Banquet Hall;300;100.0
+H03;Meeting Room;30;50.0
