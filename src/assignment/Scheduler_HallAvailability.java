@@ -327,33 +327,34 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         Date endDateTime = (Date) jsStart.getValue();
         
             // Check if the combobox & text fiels has a valid selection
-            if (cboHallId.getSelectedIndex() < 0 ) {
+        if (cboHallId.getSelectedIndex() < 0 ) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Warning",
                 JOptionPane.WARNING_MESSAGE);
-              return;
-            }
-            
-            if (txtHallType.getText().isEmpty() || 
+              return;}        
+        if (txtHallType.getText().isEmpty() || 
             txtHallCapacity.getText().isEmpty() || 
             txtBookingRate.getText().isEmpty()) {
     
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Warning",
             JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+                return;}
         
             // Update the reservation Info the Table
         DefaultTableModel reserve = (DefaultTableModel) tblReservations.getModel();
         reserve.addRow(new Object[]{hallId, halltype, startDateTime, endDateTime }); 
         
             // Update reservation Info to the txt file
-         try (FileWriter writer = new FileWriter("Hall_reservations.txt", true);
+        try (FileWriter writer = new FileWriter("Hall_reservations.txt", true);
          BufferedWriter bw = new BufferedWriter(writer);
          PrintWriter out = new PrintWriter(bw)) {
         out.println(hallId + ";" + halltype + ";" + startDateTime + ";" + endDateTime);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error writing to file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        
+            // Show success message
+        JOptionPane.showMessageDialog(this, "Reservation successfully saved.", "Success",
+            JOptionPane.INFORMATION_MESSAGE);}   
+        catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Error writing to file: " + e.getMessage(), "Error", 
+            JOptionPane.ERROR_MESSAGE);}
     }//GEN-LAST:event_btnSetDateOrTimeActionPerformed
 
     private void btnBackHPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackHPActionPerformed
