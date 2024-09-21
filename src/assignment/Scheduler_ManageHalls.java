@@ -3,19 +3,52 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package assignment;
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.io.IOException; 
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import javax.swing.JOptionPane;
+/*
+import java.io.FileWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;*/
 
-/**
- *
- * @author user
- */
+
 public class Scheduler_ManageHalls extends javax.swing.JFrame {
+    public String selHall;
+        
+    ArrayList<Halls> hall = new ArrayList<>();
 
-    /**
-     * Creates new form Scheduler_ManageHalls
-     */
     public Scheduler_ManageHalls() {
         initComponents();
+        loadReservationIds("Hall_reservations.txt");
+        
+            cboResId.addActionListener(new java.awt.event.ActionListener() {
+            @Override //method is overridden to update the text fields when a Hall ID is selected.
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboResIdActionPerformed(evt);
+            }
+        });
+            
+            btnBackHP.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackHPActionPerformed(evt);
+            }
+        });
     }
+            //Error handling method
+        private void showError(String message) {
+        javax.swing.JOptionPane.showMessageDialog(this, message, "Error",
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,17 +62,20 @@ public class Scheduler_ManageHalls extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         btnBackHP = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        cboResId = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        btnDel = new javax.swing.JButton();
+        btnView = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblHallManage = new javax.swing.JTable();
+        btnEdit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(204, 204, 204));
 
         jPanel5.setBackground(new java.awt.Color(0, 102, 204));
 
         btnBackHP.setBackground(new java.awt.Color(0, 102, 204));
-        btnBackHP.setIcon(new javax.swing.ImageIcon("C:\\Users\\user\\Downloads\\back-24.png")); // NOI18N
+        btnBackHP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assignment/back-24.png"))); // NOI18N
         btnBackHP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackHPActionPerformed(evt);
@@ -57,28 +93,70 @@ public class Scheduler_ManageHalls extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(btnBackHP)
-                .addGap(180, 180, 180)
+                .addGap(279, 279, 279)
                 .addComponent(jLabel3)
-                .addContainerGap(248, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(7, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBackHP))
                 .addContainerGap())
         );
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel5.setText("Halls Type");
+        cboResId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboResIdActionPerformed(evt);
+            }
+        });
 
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel6.setText("Hall ID");
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jLabel6.setText("Reservation ID");
 
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel7.setText("Hall Capacity");
+        btnDel.setBackground(new java.awt.Color(0, 102, 204));
+        btnDel.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        btnDel.setForeground(new java.awt.Color(255, 255, 255));
+        btnDel.setText("Delete");
+        btnDel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelActionPerformed(evt);
+            }
+        });
+
+        btnView.setBackground(new java.awt.Color(0, 102, 204));
+        btnView.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        btnView.setForeground(new java.awt.Color(255, 255, 255));
+        btnView.setText("View");
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewActionPerformed(evt);
+            }
+        });
+
+        tblHallManage.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tblHallManage.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Hall ID", "Hall Type", "Reservation Starts ", "Reservation Ends "
+            }
+        ));
+        jScrollPane1.setViewportView(tblHallManage);
+
+        btnEdit.setBackground(new java.awt.Color(0, 102, 204));
+        btnEdit.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        btnEdit.setForeground(new java.awt.Color(255, 255, 255));
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -86,24 +164,42 @@ public class Scheduler_ManageHalls extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(55, 55, 55)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(174, 174, 174)
+                                .addComponent(jLabel6)
+                                .addGap(108, 108, 108))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(186, 186, 186)
+                                .addComponent(cboResId, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(btnView)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDel)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEdit)))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(46, 46, 46)
                 .addComponent(jLabel6)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel7)
-                .addGap(0, 209, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cboResId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(41, 41, 41)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         pack();
@@ -114,6 +210,251 @@ public class Scheduler_ManageHalls extends javax.swing.JFrame {
         homePage.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackHPActionPerformed
+
+            // loading the reservation Id
+    private void loadReservationIds(String filename) {
+        try {
+            HallsLoader hallsLoader = new HallsLoader();
+            List<String> reservationIds = hallsLoader.loadReservationIds(filename);
+
+            System.out.println("Loaded reservation IDs: " + reservationIds);
+
+            for (String resId : reservationIds) {
+                cboResId.addItem(resId);
+                System.out.println("Added reservation ID to combo box: " + resId);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void cboResIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboResIdActionPerformed
+        System.out.println("Selected reservation ID: " 
+                + cboResId.getSelectedItem());
+    }//GEN-LAST:event_cboResIdActionPerformed
+
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+    // Get the selected reservation ID from the combo box
+    String selectedId = (String) cboResId.getSelectedItem();
+    // Check if a reservation ID is selected
+    if (selectedId == null || selectedId.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please select a Reservation ID.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Get the table model and clear existing rows
+    DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+    model.setRowCount(0);
+
+    try (BufferedReader reader = new BufferedReader(new FileReader("Hall_reservations.txt"))) {
+        String line;
+        boolean found = false;
+
+        // Read through the file line by line
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(";");
+            // Check if the current line matches the selected reservation ID
+            if (parts.length > 4 && parts[4].equals(selectedId)) {
+                // Add the matching reservation data to the table
+                model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3]});
+                found = true;
+                break; // Assuming each ID is unique, we can stop after finding the match
+            }
+        }
+
+        // If no matching reservation is found, inform the user
+        if (!found) {
+            JOptionPane.showMessageDialog(this, 
+                    "No reservation found for the selected ID.",
+                    "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+    } catch (IOException e) {
+        // Handle any IO exceptions that occur during file reading
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, 
+                "Error reading reservation data: " 
+                + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btnViewActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+    // Get the selected reservation ID from the combo box
+    String selectedReservationId = cboResId.getSelectedItem().toString();
+    DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+    int selectedRow = tblHallManage.getSelectedRow();
+
+    // Check if a row is selected in the table
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(null, "Please select a row to edit.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        
+        // Update the text file by removing the line with the selected reservation ID
+            /*The temporary file created during the deletion process and it is
+            named temp_Hall_reservations.txt is created as part of the deletion 
+            process to update the reservation information. After the deletion is
+            completed, the temporary file is used to overwrite the original file*/
+        File inputFile = new File("Hall_reservations.txt");
+        File tempFile = new File("temp_Hall_reservations.txt");
+
+        // Create readers and writers for file operations
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String line;
+        boolean found = false;
+        // Read through the original file line by line
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(";");
+            // Check if the current line matches the selected reservation ID
+            if (parts.length > 4 && parts[4].equals(selectedReservationId)) {
+                // Update the line with new values from the table
+                String updatedLine = String.format("%s;%s;%s;%s;%s",
+                        model.getValueAt(selectedRow, 0),
+                        model.getValueAt(selectedRow, 1),
+                        model.getValueAt(selectedRow, 2),
+                        model.getValueAt(selectedRow, 3),
+                        selectedReservationId);
+                writer.write(updatedLine + System.lineSeparator());
+                found = true;
+            } else {
+                // Write unchanged lines to the temporary file
+                writer.write(line + System.lineSeparator());
+            }
+        }
+
+        // Close the reader and writer
+        reader.close();
+        writer.close();
+
+        // Check if the reservation was found and updated
+        if (!found) {
+            JOptionPane.showMessageDialog(null,
+                    "Reservation ID not found in the file.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Replace the original file with the updated temp file
+        if (!inputFile.delete()) {
+            throw new IOException("Could not delete the original file");
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not rename temp file");
+        }
+
+        // Inform the user of successful update
+        JOptionPane.showMessageDialog(null, "Changes saved successfully!");
+        
+        // Refresh the table view to reflect the changes
+        btnViewActionPerformed(null);
+    } 
+    catch (IOException ex) {
+        // Handle any IO exceptions that occur during file operations
+        System.out.println("Error updating hall reservation: " + ex.getMessage());
+        JOptionPane.showMessageDialog(null, "Error updating hall reservation.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btnEditActionPerformed
+    
+    private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
+    DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+
+    // Retrieve the selected reservation ID from the combo box
+    String reservationId = cboResId.getSelectedItem().toString();
+    
+    // Check if a reservation ID is selected
+    if (reservationId.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Please select a reservation ID to delete.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    try {
+        File inputFile = new File("Hall_reservations.txt");
+        File tempFile = new File("temp_Hall_reservations.txt");
+
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String line;
+        boolean found = false;
+        while ((line = reader.readLine()) != null) {
+            if (!line.contains(reservationId)) {
+                writer.write(line + System.lineSeparator());
+            } else {
+                found = true;
+            }
+        }
+
+        reader.close();
+        writer.close();
+
+        if (!found) {
+            JOptionPane.showMessageDialog(null, "Reservation ID not found in the file.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Replace the original file with the updated temp file
+        if (!inputFile.delete()) {
+            throw new IOException("Could not delete the original file");
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not rename temp file");
+        }
+
+        // Remove the selected row from the JTable
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).equals(reservationId)) {
+                model.removeRow(i);
+                break;
+            }
+        }
+
+        // Remove the deleted reservation ID from the combo box
+        cboResId.removeItem(reservationId);
+
+        JOptionPane.showMessageDialog(null, "The selected reservation " 
+                + reservationId + " has been deleted successfully.");
+
+        // Clear the table
+        model.setRowCount(0);
+
+        // Refresh the table view with the updated data
+        loadReservationData();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error deleting reservation: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }
+
+    // this method to load reservation data into the table
+    private void loadReservationData() {
+    DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+    model.setRowCount(0); // Clear existing rows
+
+    try (BufferedReader reader = new BufferedReader(new FileReader("Hall_reservations.txt"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(";");
+            if (parts.length > 4) {
+                model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3]});
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error loading reservation data: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btnDelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,10 +493,14 @@ public class Scheduler_ManageHalls extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBackHP;
+    private javax.swing.JButton btnDel;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnView;
+    private javax.swing.JComboBox<String> cboResId;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblHallManage;
     // End of variables declaration//GEN-END:variables
 }

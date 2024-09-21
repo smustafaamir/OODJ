@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+//import java.io.BufferedReader;
+//import java.io.File;
+//import java.io.FileReader;
 //import javax.swing.JSpinner;
 //import javax.swing.SpinnerDateModel;
 //import javax.swing.table.DefaultTableModel;
 //import javax.swing.*;
 //import java.util.Date;
-//import java.io.BufferedReader;
-//import java.io.FileReader;
 //import java.text.SimpleDateFormat;
 //import java.util.Calendar;
 
@@ -28,22 +29,8 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     
     public Scheduler_HallAvailability() {
         initComponents();
-        try {
-            hall = HallsLoader.loadHalls("Halls_Info.txt");
-            for (Halls Hh : hall) {
-                cboHallId.addItem(Hh.getHallID());
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-            //cboHallId.removeAllItems();
-            //jsEnd.setValue("");
-            //jsStart.setValue("");
-            txtHallType.setText("");
-            txtHallCapacity.setText("");
-            txtBookingRate.setText("");
-            
-            
+        loadHallIds();
+                       
             cboHallId.addActionListener(new java.awt.event.ActionListener() {
             @Override //method is overridden to update the text fields when a Hall ID is selected.
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -57,9 +44,9 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackHPActionPerformed(evt);
             }
-        });
-        
+        });        
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,7 +63,6 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         btnReset = new javax.swing.JButton();
         btnSetDateOrTime = new javax.swing.JButton();
@@ -89,6 +75,9 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         tblReservations = new javax.swing.JTable();
         jsEnd = new javax.swing.JSpinner();
         jsStart = new javax.swing.JSpinner();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txtResId = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 204, 204));
@@ -96,7 +85,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 102, 204));
 
         btnBackHP.setBackground(new java.awt.Color(0, 102, 204));
-        btnBackHP.setIcon(new javax.swing.ImageIcon("C:\\Users\\user\\Downloads\\back-24.png")); // NOI18N
+        btnBackHP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assignment/back-24.png"))); // NOI18N
         btnBackHP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackHPActionPerformed(evt);
@@ -114,17 +103,17 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(btnBackHP)
-                .addGap(327, 327, 327)
+                .addGap(307, 307, 307)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(7, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBackHP))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnBackHP)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -137,10 +126,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
         jLabel7.setText("Hall Capacity");
 
-        jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
-        jLabel9.setText("Reservation Start Date & Time");
-
-        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel11.setText("Reservation End Date&Time");
 
         btnReset.setBackground(new java.awt.Color(0, 102, 204));
@@ -180,7 +166,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Hall ID", "Hall Type", "Reservation Start Date&Time", "Reservation End Date&Time"
+                "Hall ID", "Reservation ID", "Hall Type", "Reservation Start Date&Time", "Reservation End Date&Time"
             }
         ));
         tblReservations.setToolTipText("");
@@ -188,103 +174,132 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
 
         jsEnd.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jsEnd.setModel(new javax.swing.SpinnerDateModel());
-        jsEnd.setEditor(new javax.swing.JSpinner.DateEditor(jsEnd, "yyyy-MM-dd & HH:mm"));
+        jsEnd.setEditor(new javax.swing.JSpinner.DateEditor(jsEnd, "dd-MM-yyyy | HH:mm"));
 
         jsStart.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jsStart.setModel(new javax.swing.SpinnerDateModel());
-        jsStart.setEditor(new javax.swing.JSpinner.DateEditor(jsStart, "yyyy-MM-dd & HH:mm"));
+        jsStart.setEditor(new javax.swing.JSpinner.DateEditor(jsStart, "dd-MM-yyyy | HH:mm"));
         jsStart.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 jsStartComponentHidden(evt);
             }
         });
 
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel10.setText("Reservation Start Date & Time");
+
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        jLabel8.setText("Reservation ID");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 739, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(66, 66, 66))
             .addGroup(layout.createSequentialGroup()
+                .addGap(76, 76, 76)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addComponent(cboHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(23, 23, 23)
+                                .addComponent(jLabel5))
+                            .addComponent(txtHallType, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtHallCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(jLabel7))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel8))
+                            .addComponent(txtResId, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(32, 32, 32)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jsStart, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel10))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(cboHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtHallType, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtHallCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(58, 58, 58)
-                                .addComponent(jLabel5)
-                                .addGap(59, 59, 59)
-                                .addComponent(jLabel7)
-                                .addGap(26, 26, 26)))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12)
-                            .addComponent(txtBookingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addComponent(jLabel9))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(49, 49, 49)
-                                .addComponent(jsStart, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtBookingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnSetDateOrTime, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jsEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel11)))
+                                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(310, 310, 310)
-                        .addComponent(btnSetDateOrTime, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jsEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)))))
+                .addGap(67, 67, 67))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(66, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel12)
-                                .addComponent(jLabel9))
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(cboHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtHallType, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtHallCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtBookingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jsStart, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel6)
+                                .addGap(7, 7, 7)
+                                .addComponent(cboHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel7)
+                                    .addGap(7, 7, 7)
+                                    .addComponent(txtHallCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel5)
+                                    .addGap(7, 7, 7)
+                                    .addComponent(txtHallType, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel12)
+                                    .addGap(7, 7, 7)
+                                    .addComponent(txtBookingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(37, 37, 37))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnReset)
+                            .addComponent(btnSetDateOrTime))
+                        .addGap(25, 25, 25)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel11)
+                        .addComponent(jLabel8)
                         .addGap(7, 7, 7)
-                        .addComponent(jsEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                        .addComponent(txtResId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel11)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jsEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel10)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jsStart, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnReset)
-                    .addComponent(btnSetDateOrTime))
-                .addGap(43, 43, 43))
+                .addGap(30, 30, 30))
         );
 
         pack();
@@ -292,39 +307,55 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     
     private void cboHallIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboHallIdActionPerformed
         
-        //to Automatically add the content to the txt fields by the Hall ID number 
-        Halls selectedHall = hall.get(cboHallId.getSelectedIndex());
+    int selectedIndex = cboHallId.getSelectedIndex();
+    
+    // Check if the ComboBox has any items and the selected index is valid
+    if (selectedIndex >= 0 && selectedIndex < hall.size()) {
+        Halls selectedHall = hall.get(selectedIndex);
         if (selectedHall != null) {
+            System.out.println("Selected Hall ID: " + selectedHall.getHallID());
             txtHallType.setText(selectedHall.getHallType());
             txtHallCapacity.setText(String.valueOf(selectedHall.getCapacity()));
             txtBookingRate.setText(String.valueOf(selectedHall.getBookingRate()));
+            selHall = selectedHall.getHallID();
+        } else {
+            System.out.println("Selected hall is null.");
+        }
+    } else {
+        System.out.println("Invalid selection or hall list is empty.");
+    }
+    }//GEN-LAST:event_cboHallIdActionPerformed
+     private void loadHallIds() {
+    try {
+        HallsLoader hallsLoader = new HallsLoader();
+        hallsLoader.load("Halls_Info.txt");
+
+        // Populate combo box with hall IDs
+        for (Halls hall : hallsLoader.getHalls()) {
+            cboHallId.addItem(hall.getHallID());
+            this.hall.add(hall); // Ensure the hall list is populated
         }
 
-        selHall= selectedHall.getHallID(); 
-    }//GEN-LAST:event_cboHallIdActionPerformed
-
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    }
+     
     
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         //to delete the content from the txt fields
         txtHallType.setText("");
         txtHallCapacity.setText("");
-        txtBookingRate.setText("");
-        
-        //to delete the content for the txt file
-        /*try { 
-        FileWriter fw = new FileWriter("Hall_reservations.txt", false);
-        fw.write("");
-        fw.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }*/
+        txtBookingRate.setText("");        
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSetDateOrTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetDateOrTimeActionPerformed
         String hallId = cboHallId.getSelectedItem().toString();
         String halltype = txtHallType.getText();
-        Date startDateTime = (Date) jsEnd.getValue();
-        Date endDateTime = (Date) jsStart.getValue();
+        Date startDateTime = (Date) jsStart.getValue();
+        Date endDateTime = (Date) jsEnd.getValue();
+        String resId = txtResId.getText();
+        
         
             // Check if the combobox & text fiels has a valid selection
         if (cboHallId.getSelectedIndex() < 0 ) {
@@ -341,13 +372,13 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         
             // Update the reservation Info the Table
         DefaultTableModel reserve = (DefaultTableModel) tblReservations.getModel();
-        reserve.addRow(new Object[]{hallId, halltype, startDateTime, endDateTime }); 
+        reserve.addRow(new Object[]{hallId, halltype, startDateTime, endDateTime, resId }); 
         
             // Update reservation Info to the txt file
         try (FileWriter writer = new FileWriter("Hall_reservations.txt", true);
          BufferedWriter bw = new BufferedWriter(writer);
          PrintWriter out = new PrintWriter(bw)) {
-        out.println(hallId + ";" + halltype + ";" + startDateTime + ";" + endDateTime);
+        out.println(hallId + ";" + halltype + ";" + startDateTime + ";" + endDateTime + ";" + resId);
         
             // Show success message
         JOptionPane.showMessageDialog(this, "Reservation successfully saved.", "Success",
@@ -366,7 +397,8 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     private void jsStartComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jsStartComponentHidden
         //btnSetDateOrTime.setEnabled(jsStart.getValue() != null);
     }//GEN-LAST:event_jsStartComponentHidden
-
+  
+ 
     
     /**
      * @param args the command line arguments
@@ -402,6 +434,34 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
                 new Scheduler_HallAvailability().setVisible(true);
             }
         });
+            // Error hadling try & catch method        
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
+                    .log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
+                    .log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
+                    .log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
+                    .log(java.util.logging.Level.SEVERE, null, ex);
+        }
+         //Create and display the form 
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Scheduler_HallAvailability().setVisible(true);
+            }
+        });
     }
     
 
@@ -410,13 +470,14 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSetDateOrTime;
     private javax.swing.JComboBox<String> cboHallId;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner jsEnd;
@@ -425,5 +486,6 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     private javax.swing.JTextField txtBookingRate;
     private javax.swing.JTextField txtHallCapacity;
     private javax.swing.JTextField txtHallType;
+    private javax.swing.JTextField txtResId;
     // End of variables declaration//GEN-END:variables
 }

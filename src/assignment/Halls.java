@@ -4,18 +4,35 @@
  */
 package assignment;
 
+//import java.util.Date;
+
 
 public class Halls {
     private String HallID;
     private String HallType;
     private int Capacity;
     private double BookingRate;
+    private String reservationId;
 
-    public Halls(String HallID, String HallType, int Capacity, double BookingRate) {
+
+    public Halls(String HallID, String HallType, 
+            int Capacity, double BookingRate) {
         this.HallID = HallID;
         this.HallType = HallType;
         this.Capacity = Capacity;
         this.BookingRate = BookingRate;
+    }
+
+    public Halls(String reservationId) {
+        this.reservationId = reservationId;
+    }
+
+    public String getReservationId() {
+        return reservationId;
+    }
+
+    public void setReservationId(String reservationId) {
+        this.reservationId = reservationId;
     }
 
     public String getHallID() {
@@ -25,6 +42,7 @@ public class Halls {
     public String getHallType() {
         return HallType;
     }
+    
 
     public int getCapacity() {
         return Capacity;
@@ -33,6 +51,7 @@ public class Halls {
     public double getBookingRate() {
         return BookingRate;
     }
+    
 
     public void setHallID(String HallID) {
         this.HallID = HallID;
@@ -50,6 +69,5 @@ public class Halls {
         this.BookingRate = BookingRate;
     }
     
-   
 }
 
