@@ -228,59 +228,59 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
     
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // Get input values from text fields
-    String hallId = txtHallId.getText().trim();
-    String hallType = txtHallType.getText().trim();
-    String capacityStr = txtCapacity.getText().trim();
-    String bookingRateStr = txtBookingRate.getText().trim();
+        String hallId = txtHallId.getText().trim();
+        String hallType = txtHallType.getText().trim();
+        String capacityStr = txtCapacity.getText().trim();
+        String bookingRateStr = txtBookingRate.getText().trim();
 
-    // Validate input
-    if (hallId.isEmpty() || hallType.isEmpty() || capacityStr.isEmpty() ||
-            bookingRateStr.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill in all fields."
-                , "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        // Validate input
+        if (hallId.isEmpty() || hallType.isEmpty() || capacityStr.isEmpty() ||
+             bookingRateStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields."
+                    , "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    int capacity;
-    double bookingRate;
+        int capacity;
+        double bookingRate;
 
-    try {
-        capacity = Integer.parseInt(capacityStr);
-        bookingRate = Double.parseDouble(bookingRateStr);
-    } catch (NumberFormatException e) {
+        try {
+            capacity = Integer.parseInt(capacityStr);
+         bookingRate = Double.parseDouble(bookingRateStr);
+        } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, 
-                "Invalid capacity or booking rate. Please enter valid numbers.",
-                "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+                 "Invalid capacity or booking rate. Please enter valid numbers.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
     // Create a new Hall object
-    Halls newHall = new Halls(hallId, hallType, capacity, bookingRate);
+        Halls newHall = new Halls(hallId, hallType, capacity, bookingRate);
 
-    // Check if the hall already exists in the table
-    if (isHallInTable(newHall.getHallID())) {
-        JOptionPane.showMessageDialog(this,
-                "A hall with this ID already exists.", "Error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        // Check if the hall already exists in the table
+        if (isHallInTable(newHall.getHallID())) {
+            JOptionPane.showMessageDialog(this,
+                 "A hall with this ID already exists.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
     // Add to file
-    try {
-        addHallToFile(newHall);
-        // Add the new hall to the table without reloading all info
-        addHallToTable(newHall);
+        try {
+            addHallToFile(newHall);
+            // Add the new hall to the table without reloading all info
+            addHallToTable(newHall);
         
-        // Clear input fields
-        clearInputFields();
+            // Clear input fields
+            clearInputFields();
 
-        JOptionPane.showMessageDialog(this, "New hall added successfully!",
-                "Success", JOptionPane.INFORMATION_MESSAGE);
-    } catch (IOException e) {
-        System.err.println("Error in adding hall: " + e.getMessage());
-        JOptionPane.showMessageDialog(this, "Error adding hall: " 
-                + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+            JOptionPane.showMessageDialog(this, "New hall added successfully!",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            System.err.println("Error in adding hall: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error adding hall: " 
+                    + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnAddActionPerformed
         
     private void btnDelInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelInfoActionPerformed
@@ -311,37 +311,36 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
             System.err.println("Error deleting hall: " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Error deleting hall: " 
                     + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }   
+            }   
         }
     }//GEN-LAST:event_btnDelInfoActionPerformed
         //removes the hall from the txt file
-    private void removeHallFromFile(String hallId) throws IOException {
-    File inputFile = new File("Halls_Info.txt");
-    File tempFile = new File("temp_Halls_Info.txt");
-
-    try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(";");
-            if (parts.length > 0 && !parts[0].equals(hallId)) {
-                writer.write(line + System.lineSeparator());
-            }
+    private void removeHallFromFile(String hallId) throws IOException {    
+        File inputFile = new File("Halls_Info.txt");    
+        File tempFile = new File("temp_Halls_Info.txt");
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));         
+                BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+        
+            String line;       
+            while ((line = reader.readLine()) != null) {            
+                String[] parts = line.split(";");            
+                if (parts.length > 0 && !parts[0].equals(hallId)) {               
+                    writer.write(line + System.lineSeparator());            
+                }        
+            }    
         }
-    }
+        // Delete the original file
+        if (!inputFile.delete()) {
+            throw new IOException("Could not delete the original file");
+        }
 
-    // Delete the original file
-    if (!inputFile.delete()) {
-        throw new IOException("Could not delete the original file");
+        // Rename the temp file to the original file name
+        if (!tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not rename temp file");           
+        }       
     }
-
-    // Rename the temp file to the original file name
-    if (!tempFile.renameTo(inputFile)) {
-        throw new IOException("Could not rename temp file");
-    }
-    }
-        //add a new hall to txt file 
+         //add a new hall to txt file 
     private void addHallToFile(Halls hall) throws IOException {
         String fileName = "Halls_Info.txt";
         String hallInfo = String.format("%s;%s;%d;%.2f%n", 
