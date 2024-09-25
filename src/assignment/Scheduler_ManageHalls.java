@@ -2,55 +2,53 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package assignment;
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.io.IOException; 
+package assignment; 
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import javax.swing.JOptionPane;
 /*
 import java.io.FileWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JOptionPane;*/
+import javax.swing.JOptionPane;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.io.IOException;*/
 
 
 public class Scheduler_ManageHalls extends javax.swing.JFrame {
-    public String selHall;
-        
-    ArrayList<Halls> hall = new ArrayList<>();
-    private List<Halls> allHalls = new ArrayList<>();
+    private HallScheduler hallScheduler;
+    private ManageReservation manageReservation;
 
     public Scheduler_ManageHalls() {
         initComponents();
-        loadReservationIds("Hall_reservations.txt");
-        loadAllHalls("Halls_Info.txt");
-        
-            cboResId.addActionListener(new java.awt.event.ActionListener() {
-            @Override //method is overridden to update the text fields when a Hall ID is selected.
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboResIdActionPerformed(evt);
-            }
-        });
-            
-            btnBackHP.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBackHPActionPerformed(evt);
-            }
-        });
+        hallScheduler = new HallScheduler("Halls_Info.txt");
+        manageReservation = new ManageReservation("Hall_reservations.txt");
+        loadReservationIds();
+        setupActionListeners();
+    }
+
+    private void setupActionListeners() {
+        cboResId.addActionListener(evt -> cboResIdActionPerformed(evt));
+        btnBackHP.addActionListener(evt -> btnBackHPActionPerformed(evt));
+        btnReset.addActionListener(evt -> btnResetActionPerformed(evt));
+    }
+            // loading the reservation Id
+    private void loadReservationIds() {
+        List<String> reservationIds = manageReservation.loadReservationIds();
+        reservationIds.forEach(cboResId::addItem);
     }
             //Error handling method
-        private void showError(String message) {
+    private void showError(String message) {
         javax.swing.JOptionPane.showMessageDialog(this, message, "Error",
             javax.swing.JOptionPane.ERROR_MESSAGE);
         }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -253,322 +251,116 @@ public class Scheduler_ManageHalls extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnBackHPActionPerformed
 
-            // loading the reservation Id
-    private void loadReservationIds(String filename) {
-        try {
-            HallsLoader hallsLoader = new HallsLoader();
-            List<String> reservationIds = hallsLoader.loadReservationIds(filename);
-
-            System.out.println("Loaded reservation IDs: " + reservationIds);
-
-            for (String resId : reservationIds) {
-                cboResId.addItem(resId);
-                System.out.println("Added reservation ID to combo box: " + resId);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private void cboResIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboResIdActionPerformed
         System.out.println("Selected reservation ID: " 
                 + cboResId.getSelectedItem());
     }//GEN-LAST:event_cboResIdActionPerformed
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
-    // Get the selected reservation ID from the combo box
-        String selectedId = (String) cboResId.getSelectedItem();
-    // Check if a reservation ID is selected
+            String selectedId = (String) cboResId.getSelectedItem();
         if (selectedId == null || selectedId.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select a Reservation ID.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+            showError("Please select a Reservation ID.");
             return;
         }
-
-    // Get the table model and clear existing rows
-        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
-        model.setRowCount(0);
-
-        try (BufferedReader reader = new BufferedReader(new FileReader("Hall_reservations.txt"))) {
-            String line;
-            boolean found = false;
-
-            // Read through the file line by line
-            while ((line = reader.readLine()) != null) {            
-                String[] parts = line.split(";");
-                // Check if the current line matches the selected reservation ID
-                if (parts.length > 4 && parts[4].equals(selectedId)) {
-                // Add the matching reservation data to the table
-                    model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3]});
-                    found = true;
-                    break; // Assuming each ID is unique, we can stop after finding the match
-                }       
-            }
-            // If no matching reservation is found, inform the user
-            if (!found) {
-                JOptionPane.showMessageDialog(this, 
-                    "No reservation found for the selected ID.",
-                    "Information", JOptionPane.INFORMATION_MESSAGE);
-            }
-        
-        } catch (IOException e) {
-        // Handle any IO exceptions that occur during file reading
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, 
-                "Error reading reservation data: " 
-                + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);    
-        }
+        loadReservationData(selectedId);
     }//GEN-LAST:event_btnViewActionPerformed
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-    // Get the selected reservation ID from the combo box
-    String selectedReservationId = cboResId.getSelectedItem().toString();
-    DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
-    int selectedRow = tblHallManage.getSelectedRow();
-
-    // Check if a row is selected in the table
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(null, "Please select a row to edit.",
-                "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+        private void loadReservationData(String selectedId) {
+        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+        model.setRowCount(0);
+        List<Reservation> reservations = manageReservation.getReservationsById(selectedId);
+        reservations.forEach(reservation -> model.addRow(new Object[]{
+                reservation.getHallID(),
+                reservation.getHallType(),
+                reservation.getStartTime(),
+                reservation.getEndTime()
+        }));
     }
-
-    try {       
-        // Update the text file by removing the line with the selected reservation ID
-            /*The temporary file created during the deletion process and it is
-            named temp_Hall_reservations.txt is created as part of the deletion 
-            process to update the reservation information. After the deletion is
-            completed, the temporary file is used to overwrite the original file*/
-        File inputFile = new File("Hall_reservations.txt");
-        File tempFile = new File("temp_Hall_reservations.txt");
-
-        // Create readers and writers for file operations
-        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-
-        String line;
-        boolean found = false;
-        // Read through the original file line by line
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(";");
-            // Check if the current line matches the selected reservation ID
-            if (parts.length > 4 && parts[4].equals(selectedReservationId)) {
-                // Update the line with new values from the table
-                String updatedLine = String.format("%s;%s;%s;%s;%s",
-                        model.getValueAt(selectedRow, 0),
-                        model.getValueAt(selectedRow, 1),
-                        model.getValueAt(selectedRow, 2),
-                        model.getValueAt(selectedRow, 3),
-                        selectedReservationId);
-                writer.write(updatedLine + System.lineSeparator());
-                found = true;
-            } else {
-                // Write unchanged lines to the temporary file
-                writer.write(line + System.lineSeparator());
-            }
-        }
-
-        // Close the reader and writer
-        reader.close();
-        writer.close();
-
-        // Check if the reservation was found and updated
-        if (!found) {
-            JOptionPane.showMessageDialog(null,
-                    "Reservation ID not found in the file.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+           String selectedReservationId = cboResId.getSelectedItem().toString();
+        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+        int selectedRow = tblHallManage.getSelectedRow();
+        if (selectedRow == -1) {
+            showError("Please select a row to edit.");
             return;
         }
-
-        // Replace the original file with the updated temp file
-        if (!inputFile.delete()) {
-            throw new IOException("Could not delete the original file");
-        }
-        if (!tempFile.renameTo(inputFile)) {
-            throw new IOException("Could not rename temp file");
-        }
-
-        // Inform the user of successful update
+        Reservation updatedReservation = new Reservation(
+                model.getValueAt(selectedRow, 0).toString(),
+                model.getValueAt(selectedRow, 1).toString(),
+                model.getValueAt(selectedRow, 2).toString(),
+                model.getValueAt(selectedRow, 3).toString(),
+                selectedReservationId
+        );
+        manageReservation.updateReservation(updatedReservation);
         JOptionPane.showMessageDialog(null, "Changes saved successfully!");
-        
-        // Refresh the table view to reflect the changes
         btnViewActionPerformed(null);
-    } 
-    catch (IOException ex) {
-        // Handle any IO exceptions that occur during file operations
-        System.out.println("Error updating hall reservation: " + ex.getMessage());
-        JOptionPane.showMessageDialog(null, "Error updating hall reservation.",
-                "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_btnEditActionPerformed
     
     private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
-        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
-
     // Retrieve the selected reservation ID from the combo box
-        String reservationId = cboResId.getSelectedItem().toString();
+    Object selectedItem = cboResId.getSelectedItem();
     
     // Check if a reservation ID is selected
-        if (reservationId.isEmpty()) {        
-            JOptionPane.showMessageDialog(null, "Please select a reservation ID to delete.",
-                "Error", JOptionPane.ERROR_MESSAGE);        
-            return;    
-        }
-        
-        try {        
-            File inputFile = new File("Hall_reservations.txt");       
-            File tempFile = new File("temp_Hall_reservations.txt");
-        
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));        
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-       
-            String line;        
-            boolean found = false;       
-            while ((line = reader.readLine()) != null) {           
-                if (!line.contains(reservationId)) {               
-                    writer.write(line + System.lineSeparator());            
-                } else {               
-                    found = true;            
-                }        
-            }
-        
-            reader.close();       
-            writer.close();
-        
-            if (!found) {           
-                JOptionPane.showMessageDialog(null, "Reservation ID not found in the file.",
-                    "Error", JOptionPane.ERROR_MESSAGE);            
-                return;        
-            }
-
-        // Replace the original file with the updated temp file        
-            if (!inputFile.delete()) {            
-                throw new IOException("Could not delete the original file");        
-            }                    
-            if (!tempFile.renameTo(inputFile)) {            
-                throw new IOException("Could not rename temp file");       
-            }
-
-        // Remove the selected row from the JTable
-            for (int i = 0; i < model.getRowCount(); i++) {            
-                if (model.getValueAt(i, 0).equals(reservationId)) {                
-                    model.removeRow(i);               
-                    break;            
-                }        
-            }
-        // Remove the deleted reservation ID from the combo box
-            cboResId.removeItem(reservationId);
-                    
-            JOptionPane.showMessageDialog(null, "The selected reservation " 
-                + reservationId + " has been deleted successfully.");
-
-        // Clear the table
-            model.setRowCount(0);
-
-        // Refresh the table view with the updated data
-            loadReservationData();
-    
-        } catch (IOException e) {        
-            e.printStackTrace();        
-            JOptionPane.showMessageDialog(null, "Error deleting reservation: " 
-                + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);   
-        }    
+    if (selectedItem == null) {        
+        showError("Please select a reservation ID to delete.");
+        return;    
     }
-        //load reservation data into the table
-    private void loadReservationData() {
-        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();    
-        model.setRowCount(0); // Clear existing rows
     
-        try (BufferedReader reader = new BufferedReader(new FileReader("Hall_reservations.txt"))) {        
-            String line;        
-            while ((line = reader.readLine()) != null) {               
-                String[] parts = line.split(";");            
-                if (parts.length > 4) {                
-                    model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3]});            
-                }        
-            }    
-        } catch (IOException e) {        
-            e.printStackTrace();        
-            JOptionPane.showMessageDialog(this, "Error loading reservation data: " 
-                + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);    
-        }
+    String reservationId = selectedItem.toString(); // Safely convert to string now
+
+    // Call the delete method
+    manageReservation.deleteReservation(reservationId);
+    JOptionPane.showMessageDialog(null, "The selected reservation " + reservationId + " has been deleted successfully.");
+    
+    // Reload the reservation IDs in the combo box
+    loadReservationIds();
     }//GEN-LAST:event_btnDelActionPerformed
-        //load halls from txt file to the list
-    private void loadAllHalls(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(";");            
-                if (parts.length == 4) {                
-                    String hallId = parts[0];                
-                    String hallType = parts[1];                                    
-                    int capacity = Integer.parseInt(parts[2]);                
-                    double bookingRate = Double.parseDouble(parts[3]);                
-                    allHalls.add(new Halls(hallId, hallType, capacity, bookingRate));            
-                }        
-            }    
-        } catch (IOException | NumberFormatException e) {        
-            JOptionPane.showMessageDialog(this, "Error loading halls: " 
-                + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);   
-        }
-    }
+
     private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
-            //Ask User to enter Hall Type filter
-        String filterType = JOptionPane.showInputDialog(this, 
-                    "Enter hall type to filter (or leave blank for all):");    
-        int minCapacity = 0;
- 
-        //Ask User to enter minimum Capacity   
-        try {        
-            String capacityInput = JOptionPane.showInputDialog(this, 
-                "Enter minimum capacity (or leave blank for no minimum):");        
-            if (capacityInput != null && !capacityInput.isEmpty()) {           
-                minCapacity = Integer.parseInt(capacityInput);        
-            }   
-        } catch (NumberFormatException e) {        
-            JOptionPane.showMessageDialog(this,
-                "Invalid capacity. Please enter a valid number.", "Error",
-                JOptionPane.ERROR_MESSAGE);        
-            return;    
-        }
-        //Apply the filter and update the table   
-        List<Halls> filteredHalls = filterHalls(filterType, minCapacity);    
+        String filterType = JOptionPane.showInputDialog(this, "Enter hall type to filter (or leave blank for all):");
+        int minCapacity = getMinCapacity();
+        if (minCapacity < 0) return;
+        List<Halls> filteredHalls = hallScheduler.filterHalls(filterType, minCapacity);
         updateTableWithFilteredHalls(filteredHalls);
     }//GEN-LAST:event_btnFilterActionPerformed
 
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        loadReservationData();
-    }//GEN-LAST:event_btnResetActionPerformed
-        
-        //filter the list of halls based on the provided criteria
-    private List<Halls> filterHalls(String filterType, int minCapacity) {            
-        List<Halls> filteredHalls = new ArrayList<>();    
-        for (Halls hall : allHalls) {        
-            boolean typeMatch = filterType == null || filterType.isEmpty() 
-                || hall.getHallType().equalsIgnoreCase(filterType);       
-            boolean capacityMatch = hall.getCapacity() >= minCapacity;
-                
-            if (typeMatch && capacityMatch) {            
-                filteredHalls.add(hall);        
-            }    
-        }    
-        return filteredHalls;
-    }
-         //update the table with the filtered list of halls    
-    private void updateTableWithFilteredHalls(List<Halls> halls) {   
-        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();    
-        model.setRowCount(0);    
-        for (Halls hall : halls) {       
-            model.addRow(new Object[]{
-            hall.getHallID(),
-            hall.getHallType(),
-            hall.getCapacity(),
-            hall.getBookingRate()        
-            });    
+    private int getMinCapacity() {
+        try {
+            String capacityInput = JOptionPane.showInputDialog(this, "Enter minimum capacity (or leave blank for no minimum):");
+            return (capacityInput != null && !capacityInput.isEmpty()) ? Integer.parseInt(capacityInput) : 0;
+        } catch (NumberFormatException e) {
+            showError("Invalid capacity. Please enter a valid number.");
+            return -1;
         }
     }
+
+    private void updateTableWithFilteredHalls(List<Halls> halls) {
+        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+        model.setRowCount(0);
+        halls.forEach(hall -> model.addRow(new Object[]{
+                hall.getHallID(),
+                hall.getHallType(),
+                hall.getCapacity(),
+                hall.getBookingRate()
+        }));
+    }
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        cboResId.setSelectedIndex(-1); // Deselect any selected item
+        loadReservationIds(); 
+        loadAllReservationData();
+    }//GEN-LAST:event_btnResetActionPerformed
+    private void loadAllReservationData() {
+         
+        DefaultTableModel model = (DefaultTableModel) tblHallManage.getModel();
+        model.setRowCount(0); // Clear existing rows
+        List<Reservation> allReservations = manageReservation.getAllReservations(); 
+        allReservations.forEach(reservation -> model.addRow(new Object[]{
+                reservation.getHallID(),
+                reservation.getHallType(),
+                reservation.getStartTime(),
+                reservation.getEndTime()    
+        }));
+}   
     /**
      * @param args the command line arguments
      */

@@ -3,9 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package assignment;
-
 //import java.util.Date;
-
 
 public class Halls {
     private String HallID;
@@ -52,7 +50,7 @@ public class Halls {
         return BookingRate;
     }
     
-
+/*
     public void setHallID(String HallID) {
         this.HallID = HallID;
     }
@@ -68,6 +66,6 @@ public class Halls {
     public void setBookingRate(double BookingRate) {
         this.BookingRate = BookingRate;
     }
-    
+    */
 }
 

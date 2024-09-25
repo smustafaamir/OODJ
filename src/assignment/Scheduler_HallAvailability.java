@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import static java.lang.System.out;
 //import java.io.BufferedReader;
 //import java.io.File;
 //import java.io.FileReader;
@@ -350,7 +351,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSetDateOrTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetDateOrTimeActionPerformed
-        String hallId = cboHallId.getSelectedItem().toString();
+         String hallId = cboHallId.getSelectedItem().toString();
         String halltype = txtHallType.getText();
         Date startDateTime = (Date) jsStart.getValue();
         Date endDateTime = (Date) jsEnd.getValue();
@@ -386,6 +387,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Error writing to file: " + e.getMessage(), "Error", 
             JOptionPane.ERROR_MESSAGE);}
+         
     }//GEN-LAST:event_btnSetDateOrTimeActionPerformed
 
     private void btnBackHPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackHPActionPerformed
@@ -397,8 +399,9 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     private void jsStartComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jsStartComponentHidden
         //btnSetDateOrTime.setEnabled(jsStart.getValue() != null);
     }//GEN-LAST:event_jsStartComponentHidden
-  
- 
+
+    
+    
     
     /**
      * @param args the command line arguments
@@ -409,6 +412,25 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {

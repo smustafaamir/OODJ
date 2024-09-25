@@ -4,27 +4,32 @@
  */
 package assignment;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+//import java.io.FileOutputStream;
+//import java.io.FileReader;
+//import java.io.FileWriter;
+//import java.io.OutputStreamWriter;
+//import java.io.BufferedReader;
+//import java.io.BufferedWriter;
 /**
  *
  * @author user
  */
 public class Scheduler_AddHall extends javax.swing.JFrame {
     //declaring and initializing
-    private final HallsLoader hallsLoader = new HallsLoader();
+    private final HallAdding hallAdding;
+    private final HallsLoader hallsLoader;
 
     public Scheduler_AddHall() {
         initComponents();
+        hallAdding = new HallAdding("Halls_Info.txt");// Initialize HallAdding with the filename
+        hallsLoader = new HallsLoader();
         
         try {
         ensureFileExists("Halls_Info.txt");
@@ -60,6 +65,7 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtHallId = new javax.swing.JTextField();
         btnDelInfo = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 204, 204));
@@ -142,6 +148,16 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
             }
         });
 
+        btnEdit.setBackground(new java.awt.Color(0, 102, 204));
+        btnEdit.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        btnEdit.setForeground(new java.awt.Color(255, 255, 255));
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,7 +165,8 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(88, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -172,14 +189,12 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12)
-                            .addComponent(txtBookingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1)))
-                .addGap(54, 54, 54)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAdd)
-                    .addComponent(btnDelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtBookingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(54, 54, 54)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDelInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEdit, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
@@ -190,7 +205,9 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(166, 166, 166)
                         .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(9, 9, 9)
+                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(51, 51, 51)
@@ -211,9 +228,9 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtHallType)
                                     .addComponent(txtHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(43, 43, 43)
+                        .addGap(42, 42, 42)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(91, Short.MAX_VALUE))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
         pack();
@@ -234,10 +251,8 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
         String bookingRateStr = txtBookingRate.getText().trim();
 
         // Validate input
-        if (hallId.isEmpty() || hallType.isEmpty() || capacityStr.isEmpty() ||
-             bookingRateStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields."
-                    , "Error", JOptionPane.ERROR_MESSAGE);
+        if (hallId.isEmpty() || hallType.isEmpty() || capacityStr.isEmpty() || bookingRateStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -246,34 +261,26 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
 
         try {
             capacity = Integer.parseInt(capacityStr);
-         bookingRate = Double.parseDouble(bookingRateStr);
+            bookingRate = Double.parseDouble(bookingRateStr);
         } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, 
-                 "Invalid capacity or booking rate. Please enter valid numbers.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invalid capacity or booking rate. Please enter valid numbers.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-    // Create a new Hall object
+        // Create a new Hall object
         Halls newHall = new Halls(hallId, hallType, capacity, bookingRate);
 
         // Check if the hall already exists in the table
         if (isHallInTable(newHall.getHallID())) {
-            JOptionPane.showMessageDialog(this,
-                 "A hall with this ID already exists.", "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "A hall with this ID already exists.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-    // Add to file
+        // Add to file using HallAdding class
         try {
-            addHallToFile(newHall);
-            // Add the new hall to the table without reloading all info
+            hallAdding.addHall(newHall);
             addHallToTable(newHall);
-        
-            // Clear input fields
             clearInputFields();
-
             JOptionPane.showMessageDialog(this, "New hall added successfully!",
                     "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
@@ -284,80 +291,84 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddActionPerformed
         
     private void btnDelInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelInfoActionPerformed
-        int selectedRow = tblAddHall.getSelectedRow();    
-        if (selectedRow == -1) {        
-            JOptionPane.showMessageDialog(this, "Please select a hall to delete.",
-                    "Error", JOptionPane.ERROR_MESSAGE);        
-            return;   
-        }
-   
-        DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();    
-        String hallId = (String) model.getValueAt(selectedRow, 0);    
-        int confirm = JOptionPane.showConfirmDialog(this, 
-        "Are you sure you want to delete the hall with ID: " + hallId + "?", 
-        "Confirm Deletion", JOptionPane.YES_NO_OPTION);
-    
-        if (confirm == JOptionPane.YES_OPTION) {        
-            try {
-            // Remove from the txt file
-            removeHallFromFile(hallId);
-            
-            // Remove from the table
-            model.removeRow(selectedRow);
-            
-            JOptionPane.showMessageDialog(this, "Hall deleted successfully!",
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException e) {
-            System.err.println("Error deleting hall: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Error deleting hall: " 
-                    + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }   
-        }
-    }//GEN-LAST:event_btnDelInfoActionPerformed
-        //removes the hall from the txt file
-    private void removeHallFromFile(String hallId) throws IOException {    
-        File inputFile = new File("Halls_Info.txt");    
-        File tempFile = new File("temp_Halls_Info.txt");
-    
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));         
-                BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-        
-            String line;       
-            while ((line = reader.readLine()) != null) {            
-                String[] parts = line.split(";");            
-                if (parts.length > 0 && !parts[0].equals(hallId)) {               
-                    writer.write(line + System.lineSeparator());            
-                }        
-            }    
-        }
-        // Delete the original file
-        if (!inputFile.delete()) {
-            throw new IOException("Could not delete the original file");
+       int selectedRow = tblAddHall.getSelectedRow();
+       if (selectedRow == -1) {
+           JOptionPane.showMessageDialog(this, "Please select a hall to delete.",
+                   "Error", JOptionPane.ERROR_MESSAGE);
+           return;
         }
 
-        // Rename the temp file to the original file name
-        if (!tempFile.renameTo(inputFile)) {
-            throw new IOException("Could not rename temp file");           
-        }       
-    }
-         //add a new hall to txt file 
-    private void addHallToFile(Halls hall) throws IOException {
-        String fileName = "Halls_Info.txt";
-        String hallInfo = String.format("%s;%s;%d;%.2f%n", 
-            hall.getHallID(), hall.getHallType(), hall.getCapacity(), hall.getBookingRate());
-        
-        try (FileOutputStream fos = new FileOutputStream(fileName, true);
-             OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-             BufferedWriter writer = new BufferedWriter(osw)) {
-            
-            writer.write(hallInfo);
-            writer.flush();
-            System.out.println("Hall added to file: " + hallInfo); 
-        } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
-            throw e;
+        DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();
+        String hallId = (String) model.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete the hall with ID: " 
+                        + hallId + "?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                hallAdding.removeHall(hallId);// Delegate to HallAdding for file operation
+                model.removeRow(selectedRow); // Remove from the table
+                JOptionPane.showMessageDialog(this, "Hall deleted successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                System.err.println("Error deleting hall: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "Error deleting hall: " +
+                        e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }
+    }//GEN-LAST:event_btnDelInfoActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        int selectedRow = tblAddHall.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a hall to edit.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();
+        
+        // Get the current values
+        String hallId = model.getValueAt(selectedRow, 0).toString();
+        String hallType = model.getValueAt(selectedRow, 1).toString();
+        int capacity = Integer.parseInt(model.getValueAt(selectedRow, 2).toString());
+        double bookingRate = Double.parseDouble(model.getValueAt(selectedRow, 3).toString());
+
+        // Create input dialogs for editing
+        String newHallType = JOptionPane.showInputDialog(this,
+                "Enter new Hall Type:", hallType);
+        String newCapacityStr = JOptionPane.showInputDialog(this, 
+                "Enter new Capacity:", capacity);
+        String newBookingRateStr = JOptionPane.showInputDialog(this, 
+                "Enter new Booking Rate:", bookingRate);
+
+        // Validate and parse inputs
+        try {
+            int newCapacity = Integer.parseInt(newCapacityStr);
+            double newBookingRate = Double.parseDouble(newBookingRateStr);
+
+            // Update the table
+            model.setValueAt(newHallType, selectedRow, 1);
+            model.setValueAt(newCapacity, selectedRow, 2);
+            model.setValueAt(newBookingRate, selectedRow, 3);
+
+            // Update the hall object
+            Halls updatedHall = new Halls(hallId, newHallType, newCapacity, newBookingRate);
+            hallAdding.updateHall(updatedHall); // Call the update method in HallAdding
+
+            JOptionPane.showMessageDialog(this,
+                    "Hall information updated successfully!",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Invalid input. Please enter valid numbers for Capacity and Booking Rate.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error updating hall information: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
 
     private void addHallToTable(Halls hall) {
         DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();
@@ -378,7 +389,7 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
         }
         return false;
     }
-        //c;ear the txt fields after adding the new hall
+        //clear the txt fields after adding the new hall
     private void clearInputFields() {
         txtHallId.setText("");
         txtHallType.setText("");
@@ -399,15 +410,16 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
         //Initioalize the table with the existing hall Info in txt file
     private void initializeTable() {
         try {
-            hallsLoader.load("Halls_Info.txt");
-            updateTable();
+            List<Halls> halls = hallAdding.loadHalls();
+            updateTable(halls);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error loading hall information: " 
+            JOptionPane.showMessageDialog(this,
+                    "Error loading hall information: " 
                     + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
         //Update the table with the current hall Info
-    private void updateTable() {    
+    private void updateTable(List<Halls> halls) {    
         DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();    
         model.setRowCount(0); // Clear existing rows
 
@@ -459,6 +471,7 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBackHP;
     private javax.swing.JButton btnDelInfo;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;

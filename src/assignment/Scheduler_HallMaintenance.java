@@ -4,17 +4,27 @@
  */
 package assignment;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author user
  */
 public class Scheduler_HallMaintenance extends javax.swing.JFrame {
+    private List<Halls> hallList;
 
-    /**
-     * Creates new form Scheduler_HallMaintenance
-     */
+
     public Scheduler_HallMaintenance() {
+        hallList = new ArrayList<>();
         initComponents();
+        loadHallIds();
+        
     }
 
     /**
@@ -29,6 +39,17 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         btnBackHP = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        btnSetM = new javax.swing.JButton();
+        btnResetM = new javax.swing.JButton();
+        jsEndMaintenance = new javax.swing.JSpinner();
+        jLabel11 = new javax.swing.JLabel();
+        jsStartMaintenance = new javax.swing.JSpinner();
+        jLabel10 = new javax.swing.JLabel();
+        cboMHallId = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        txtRemarks = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,9 +74,9 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(btnBackHP)
-                .addGap(145, 145, 145)
+                .addGap(193, 193, 193)
                 .addComponent(jLabel3)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -67,17 +88,145 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btnSetM.setBackground(new java.awt.Color(0, 102, 204));
+        btnSetM.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        btnSetM.setForeground(new java.awt.Color(255, 255, 255));
+        btnSetM.setText("Set");
+        btnSetM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSetMActionPerformed(evt);
+            }
+        });
+
+        btnResetM.setBackground(new java.awt.Color(0, 102, 204));
+        btnResetM.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        btnResetM.setForeground(new java.awt.Color(255, 255, 255));
+        btnResetM.setText("Reset");
+        btnResetM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetMActionPerformed(evt);
+            }
+        });
+
+        jsEndMaintenance.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jsEndMaintenance.setModel(new javax.swing.SpinnerDateModel());
+        jsEndMaintenance.setEditor(new javax.swing.JSpinner.DateEditor(jsEndMaintenance, "dd-MM-yyyy | HH:mm"));
+
+        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel11.setText("Reservation End Date&Time");
+
+        jsStartMaintenance.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jsStartMaintenance.setModel(new javax.swing.SpinnerDateModel());
+        jsStartMaintenance.setEditor(new javax.swing.JSpinner.DateEditor(jsStartMaintenance, "dd-MM-yyyy | HH:mm"));
+        jsStartMaintenance.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                jsStartMaintenanceComponentHidden(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel10.setText("Reservation Start Date & Time");
+
+        cboMHallId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMHallIdActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        jLabel6.setText("Hall ID");
+
+        jPanel1.setBackground(new java.awt.Color(0, 102, 204));
+
+        txtRemarks.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Remarks:");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(72, Short.MAX_VALUE)
+                .addComponent(txtRemarks, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtRemarks, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(110, 110, 110)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(142, 142, 142)
+                        .addComponent(btnSetM, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnResetM, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addComponent(cboMHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jsStartMaintenance, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(33, 33, 33)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(jLabel11))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(41, 41, 41)
+                                .addComponent(jsEndMaintenance, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 353, Short.MAX_VALUE))
+                .addGap(44, 44, 44)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jsEndMaintenance, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(7, 7, 7)
+                        .addComponent(cboMHallId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jsStartMaintenance, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(46, 46, 46)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnResetM)
+                    .addComponent(btnSetM))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         pack();
@@ -89,6 +238,102 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnBackHPActionPerformed
 
+    private void btnSetMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetMActionPerformed
+        String hallId = (String) cboMHallId.getSelectedItem();
+        String hallType = getHallType(hallId); // Get hall type based on selected hall ID
+        Date startDate = (Date) jsStartMaintenance.getValue();
+        Date endDate = (Date) jsEndMaintenance.getValue();
+        String remarks = txtRemarks.getText(); // Get remarks from the text field
+
+        // Check if Hall ID and dates are selected
+        if (hallId == null || hallId.isEmpty()) {
+            showError("Please select a Hall ID.");
+            return; // Exit the method if validation fails
+        }
+    
+        if (startDate == null || endDate == null) {
+            showError("Please set both start and end dates.");
+            return; // Exit the method if validation fails
+        }
+
+        if (validateInputs(hallId, startDate, endDate)) {
+            saveMaintenanceSchedule(hallId, hallType, startDate, endDate, remarks);
+        }          
+    }//GEN-LAST:event_btnSetMActionPerformed
+
+    private void btnResetMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetMActionPerformed
+                // Reset fields
+        cboMHallId.setSelectedIndex(0);
+        jsStartMaintenance.setValue(new Date());
+        jsEndMaintenance.setValue(new Date());
+        txtRemarks.setText("");
+    }//GEN-LAST:event_btnResetMActionPerformed
+
+    private void jsStartMaintenanceComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jsStartMaintenanceComponentHidden
+        
+    }//GEN-LAST:event_jsStartMaintenanceComponentHidden
+
+    private void cboMHallIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMHallIdActionPerformed
+
+    }//GEN-LAST:event_cboMHallIdActionPerformed
+    
+    // Validate loading Hall Ids
+     private void loadHallIds() {
+        try {
+            HallsLoader hallsLoader = new HallsLoader();
+            hallsLoader.load("Halls_Info.txt");
+            hallList = hallsLoader.getHalls(); // Store the loaded halls
+            populateHallComboBox();
+        } catch (IOException e) {
+            showError("Error loading hall IDs: " + e.getMessage());
+        }
+    }
+
+    private void populateHallComboBox() {
+        for (Halls hall : hallList) {
+            cboMHallId.addItem(hall.getHallID());
+        }
+    }
+    private String getHallType(String hallId) {
+        for (Halls hall : hallList) {
+            if (hall.getHallID().equals(hallId)) {
+                return hall.getHallType(); // Return the hall type for the selected hall ID
+            }
+        }
+        return ""; // Return empty if not found
+    }
+    
+    private boolean validateInputs(String hallId, Date startDate, Date endDate) {
+        if (hallId == null || startDate == null || endDate == null) {
+            showError("Please fill in all fields.");
+            return false;
+        }
+        if (startDate.after(endDate)) {
+            showError("Start date must be before end date.");
+            return false;
+        }
+        return true;
+    }
+
+    private void saveMaintenanceSchedule(String hallId, 
+            String hallType, Date startDate, Date endDate, String remarks) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Maintenance_oper.txt", true))) {
+            writer.write(hallId + ";" + hallType + ";" + startDate + ";" + endDate + ";" + remarks);
+            writer.newLine();
+            showMessage("Maintenance schedule saved successfully.");
+        } catch (IOException e) {
+            showError("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    private void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -146,7 +391,18 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBackHP;
+    private javax.swing.JButton btnResetM;
+    private javax.swing.JButton btnSetM;
+    private javax.swing.JComboBox<String> cboMHallId;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JSpinner jsEndMaintenance;
+    private javax.swing.JSpinner jsStartMaintenance;
+    private javax.swing.JTextField txtRemarks;
     // End of variables declaration//GEN-END:variables
 }
