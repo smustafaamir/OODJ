@@ -11,20 +11,14 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-//import java.io.FileOutputStream;
-//import java.io.FileReader;
-//import java.io.FileWriter;
-//import java.io.OutputStreamWriter;
-//import java.io.BufferedReader;
-//import java.io.BufferedWriter;
 /**
  *
  * @author user
  */
 public class Scheduler_AddHall extends javax.swing.JFrame {
     //declaring and initializing
-    private final HallAdding hallAdding;
-    private final HallsLoader hallsLoader;
+    private final HallAdding hallAdding;// Composition: uses HallAdding for hall management
+    private final HallsLoader hallsLoader; // Composition: uses HallsLoader to load hall data
 
     public Scheduler_AddHall() {
         initComponents();
@@ -32,8 +26,8 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
         hallsLoader = new HallsLoader();
         
         try {
-        ensureFileExists("Halls_Info.txt");
-        initializeTable();
+        ensureFileExists("Halls_Info.txt");// Ensure the file exists before loading
+        initializeTable();// Load existing halls into the table
     } catch (IOException e) {
         System.err.println("Error ensuring file exists: " + e.getMessage());
         JOptionPane.showMessageDialog(this, "Error initializing: " 
@@ -370,6 +364,7 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEditActionPerformed
 
+    // Abstraction: Adds a new hall to the table
     private void addHallToTable(Halls hall) {
         DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();
         model.addRow(new Object[]{
@@ -379,17 +374,17 @@ public class Scheduler_AddHall extends javax.swing.JFrame {
             hall.getBookingRate()
         });
     }
-        //check if hallId already exists or not
+        //Abstraction: check if hallId already exists or not
     private boolean isHallInTable(String hallId) {
         DefaultTableModel model = (DefaultTableModel) tblAddHall.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getValueAt(i, 0).equals(hallId)) {
-                return true;
+                return true;// Checks if the hall ID already exists in the table
             }
         }
-        return false;
+        return false;// Returns false if the hall ID does not exist
     }
-        //clear the txt fields after adding the new hall
+        //Encapsulation: clear the txt fields after adding the new hall
     private void clearInputFields() {
         txtHallId.setText("");
         txtHallType.setText("");

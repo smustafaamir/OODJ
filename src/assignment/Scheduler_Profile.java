@@ -207,13 +207,13 @@ public class Scheduler_Profile extends javax.swing.JFrame {
 
     private void ShowPopUpMessage(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ShowPopUpMessage
         javax.swing.JOptionPane.showMessageDialog(this,
-                "Sorry, you are not able to edit your ID",
+                "Sorry, you are not able to edit your ID", // Abstraction: shows a message dialog
                 "Edit Not Allowed", javax.swing.JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_ShowPopUpMessage
 
     private void ShowPopUpMessage2(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ShowPopUpMessage2
         javax.swing.JOptionPane.showMessageDialog(this, 
-                "Sorry, you are not able to edit your Password",
+                "Sorry, you are not able to edit your Password", // Abstraction: shows a message dialog
                 "Edit Not Allowed", javax.swing.JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_ShowPopUpMessage2
 

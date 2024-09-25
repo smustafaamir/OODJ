@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ManageReservation {
-    private String thefile;
+    private String thefile; // Encapsulation: private field
 
     public ManageReservation(String thefile) {
         this.thefile = thefile;
     }
 
-    public List<String> loadReservationIds() {
+    // All Methods: OOP principle
+    public List<String> loadReservationIds() { // Constructor: OOP principle
         List<String> reservationIds = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(thefile))) {
             String line;

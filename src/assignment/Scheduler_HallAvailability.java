@@ -11,28 +11,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import static java.lang.System.out;
-//import java.io.BufferedReader;
-//import java.io.File;
-//import java.io.FileReader;
-//import javax.swing.JSpinner;
-//import javax.swing.SpinnerDateModel;
-//import javax.swing.table.DefaultTableModel;
-//import javax.swing.*;
-//import java.util.Date;
-//import java.text.SimpleDateFormat;
-//import java.util.Calendar;
+
 
 public class Scheduler_HallAvailability extends javax.swing.JFrame {
     public String selHall;
     
-    ArrayList<Halls> hall = new ArrayList<>();
+    ArrayList<Halls> hall = new ArrayList<>();// Encapsulation: uses ArrayList to manage hall data
     
     public Scheduler_HallAvailability() {
         initComponents();
         loadHallIds();
                        
-            cboHallId.addActionListener(new java.awt.event.ActionListener() {
+            cboHallId.addActionListener(new java.awt.event.ActionListener() {// Abstraction
             @Override //method is overridden to update the text fields when a Hall ID is selected.
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboHallIdActionPerformed(evt);
@@ -326,8 +316,8 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         System.out.println("Invalid selection or hall list is empty.");
     }
     }//GEN-LAST:event_cboHallIdActionPerformed
-     private void loadHallIds() {
-    try {
+    private void loadHallIds(){//Abstraction:
+     try {                    //hides implementation details of loading hall IDs
         HallsLoader hallsLoader = new HallsLoader();
         hallsLoader.load("Halls_Info.txt");
 
@@ -344,7 +334,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
      
     
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        //to delete the content from the txt fields
+        //Encapsulation: to delete the content from the txt fields
         txtHallType.setText("");
         txtHallCapacity.setText("");
         txtBookingRate.setText("");        
@@ -391,6 +381,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSetDateOrTimeActionPerformed
 
     private void btnBackHPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackHPActionPerformed
+        // Inheritance: creates an instance of another JFrame
         Scheduler_HomePage homePage = new Scheduler_HomePage();
         homePage.setVisible(true);
         this.dispose();
@@ -399,10 +390,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
     private void jsStartComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jsStartComponentHidden
         //btnSetDateOrTime.setEnabled(jsStart.getValue() != null);
     }//GEN-LAST:event_jsStartComponentHidden
-
-    
-    
-    
+   
     /**
      * @param args the command line arguments
      */
@@ -430,53 +418,7 @@ public class Scheduler_HallAvailability extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Scheduler_HallAvailability().setVisible(true);
-            }
-        });
-            // Error hadling try & catch method        
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        /* Create and display the form */ 
          //Create and display the form 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

@@ -9,14 +9,14 @@ package assignment;
  * @author user
  */
 public class Reservation {
-     private String hallID;
+     private String hallID;  // Encapsulation: private fields
     private String hallType;
     private String startTime;
     private String endTime;
     private String reservationID;
 
     public Reservation(String hallID, String hallType, String startTime,
-            String endTime, String reservationID) {
+            String endTime, String reservationID) { //Constructor:OOP principle
         this.hallID = hallID;
         this.hallType = hallType;
         this.startTime = startTime;
@@ -24,6 +24,7 @@ public class Reservation {
         this.reservationID = reservationID;
     }
 
+    // Getters method: OOP principle
     public String getHallID() {
         return hallID;
     }

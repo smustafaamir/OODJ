@@ -23,7 +23,7 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
     public Scheduler_HallMaintenance() {
         hallList = new ArrayList<>();
         initComponents();
-        loadHallIds();
+        loadHallIds();//Abstraction
         
     }
 
@@ -240,14 +240,14 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
 
     private void btnSetMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetMActionPerformed
         String hallId = (String) cboMHallId.getSelectedItem();
-        String hallType = getHallType(hallId); // Get hall type based on selected hall ID
+        String hallType = getHallType(hallId); //  Abstraction: Get hall type based on selected hall ID
         Date startDate = (Date) jsStartMaintenance.getValue();
         Date endDate = (Date) jsEndMaintenance.getValue();
-        String remarks = txtRemarks.getText(); // Get remarks from the text field
+        String remarks = txtRemarks.getText(); // Encapsulation: Get remarks from the text field
 
         // Check if Hall ID and dates are selected
         if (hallId == null || hallId.isEmpty()) {
-            showError("Please select a Hall ID.");
+            showError("Please select a Hall ID."); // Abstraction: shows error message
             return; // Exit the method if validation fails
         }
     
@@ -256,13 +256,13 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
             return; // Exit the method if validation fails
         }
 
-        if (validateInputs(hallId, startDate, endDate)) {
+        if (validateInputs(hallId, startDate, endDate)) {// Abstraction: validates inputs
             saveMaintenanceSchedule(hallId, hallType, startDate, endDate, remarks);
         }          
     }//GEN-LAST:event_btnSetMActionPerformed
 
     private void btnResetMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetMActionPerformed
-                // Reset fields
+                // Encapsulation: Reset fields
         cboMHallId.setSelectedIndex(0);
         jsStartMaintenance.setValue(new Date());
         jsEndMaintenance.setValue(new Date());
@@ -278,13 +278,13 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
     }//GEN-LAST:event_cboMHallIdActionPerformed
     
     // Validate loading Hall Ids
-     private void loadHallIds() {
+     private void loadHallIds() {// Abstraction: loads hall IDs from a file
         try {
-            HallsLoader hallsLoader = new HallsLoader();
+            HallsLoader hallsLoader = new HallsLoader();// Composition: uses HallsLoader to manage hall data
             hallsLoader.load("Halls_Info.txt");
             hallList = hallsLoader.getHalls(); // Store the loaded halls
             populateHallComboBox();
-        } catch (IOException e) {
+        } catch (IOException e) {// Abstraction: populates the combo box with hall IDs
             showError("Error loading hall IDs: " + e.getMessage());
         }
     }
@@ -294,15 +294,15 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
             cboMHallId.addItem(hall.getHallID());
         }
     }
-    private String getHallType(String hallId) {
-        for (Halls hall : hallList) {
+    private String getHallType(String hallId) {// Abstraction: populates the combo box with hall IDs
+        for (Halls hall : hallList) {// Encapsulation: adds hall ID to the combo box
             if (hall.getHallID().equals(hallId)) {
-                return hall.getHallType(); // Return the hall type for the selected hall ID
+                return hall.getHallType(); // Abstraction: Return the hall type for the selected hall ID
             }
         }
         return ""; // Return empty if not found
     }
-    
+    // Abstraction: validates input fields
     private boolean validateInputs(String hallId, Date startDate, Date endDate) {
         if (hallId == null || startDate == null || endDate == null) {
             showError("Please fill in all fields.");
@@ -314,7 +314,7 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
         }
         return true;
     }
-
+    // Abstraction: saves maintenance schedule
     private void saveMaintenanceSchedule(String hallId, 
             String hallType, Date startDate, Date endDate, String remarks) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Maintenance_oper.txt", true))) {
@@ -361,32 +361,7 @@ public class Scheduler_HallMaintenance extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Scheduler_HallAvailability.class.getName())
-                    .log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Scheduler_HallMaintenance().setVisible(true);
-            }
-        });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

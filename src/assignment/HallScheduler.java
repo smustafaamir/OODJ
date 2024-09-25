@@ -9,16 +9,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HallScheduler {
-    private String thefile;
+public class HallScheduler { // Class definition: OOP principle
+    private String thefile; /* Encapsulation: private fields 
+                             restrict direct access, promoting data hiding.*/
     private List<Halls> allHalls;
 
-    public HallScheduler(String thefile) {
+    public HallScheduler(String thefile) { // Constructor: OOP principle
         this.thefile = thefile;
-        this.allHalls = loadAllHalls();
+        this.allHalls = loadAllHalls(); // Method call: OOP principle
     }
 
-    private List<Halls> loadAllHalls() {
+    private List<Halls> loadAllHalls() {  // Method: OOP principle
         List<Halls> halls = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(thefile))) {
             String line;
@@ -36,7 +37,7 @@ public class HallScheduler {
         return halls;
     }
 
-    public List<Halls> filterHalls(String filterType, int minCapacity) {
+    public List<Halls> filterHalls(String filterType, int minCapacity) { // Method: OOP principle
         List<Halls> filteredHalls = new ArrayList<>();
         for (Halls hall : allHalls) {
             boolean typeMatch = filterType == null || filterType.isEmpty() 

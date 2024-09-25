@@ -11,25 +11,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Interface
-interface Loadable {
-    void load(String filename) throws IOException;
+interface Loadable { // Interface: OOP principle
+    void load(String filename) throws IOException; // Abstract method in interface
 }
 
-// Abstract class
+// Abstract class : OOP princple
 abstract class Loader implements Loadable {
-    protected List<Halls> halls = new ArrayList<>();
+    protected List<Halls> halls = new ArrayList<>(); /* Encapsulation:
+                                                       protected field*/
 
-    public List<Halls> getHalls() {
+    public List<Halls> getHalls() { // Getter method: OOP principle
         return halls;
     }
 
-    // Abstract method
+    // Abstract method: OOP principle
     public abstract void load(String filename) throws IOException;
 }
 
 // Public HallsLoader class extending Loader
-public class HallsLoader extends Loader {
-    @Override
+public class HallsLoader extends Loader { // Inheritance: OOP principle
+    @Override // Method overriding: OOP principle
     public void load(String filename) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
@@ -48,7 +49,6 @@ public class HallsLoader extends Loader {
         reader.close();
     }
 
-    // Method to load reservation IDs from a text file
 
 // Method to load reservation IDs from a text file
     public List<String> loadReservationIds(String filename) throws IOException {

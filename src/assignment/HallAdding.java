@@ -10,10 +10,11 @@ import java.util.List;
 
 // Class responsible for managing hall data persistence
 public class HallAdding {
-    private String filename;
+    private String filename; /*Encapsulation: private field 
+                                    restricting direct access.*/
 
      // Method to add a new hall to the file
-    public HallAdding(String filename) {
+    public HallAdding(String filename) {  // Constructor: OOP principle
         this.filename = filename;
     }
 

@@ -6,19 +6,6 @@ package assignment;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
-/*
-import java.io.FileWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JOptionPane;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.io.IOException;*/
 
 
 public class Scheduler_ManageHalls extends javax.swing.JFrame {

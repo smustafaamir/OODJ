@@ -5,15 +5,15 @@
 package assignment;
 //import java.util.Date;
 
-public class Halls {
-    private String HallID;
+public class Halls {// Class definition: OOP principle
+    private String HallID; // Encapsulation: private fields
     private String HallType;
     private int Capacity;
     private double BookingRate;
     private String reservationId;
 
 
-    public Halls(String HallID, String HallType, 
+    public Halls(String HallID, String HallType, // Constructor: OOP principle
             int Capacity, double BookingRate) {
         this.HallID = HallID;
         this.HallType = HallType;
@@ -21,19 +21,19 @@ public class Halls {
         this.BookingRate = BookingRate;
     }
 
-    public Halls(String reservationId) {
+    public Halls(String reservationId) { // Constructor overloading: OOP principle
         this.reservationId = reservationId;
     }
 
-    public String getReservationId() {
+    public String getReservationId() { // Getter method: OOP principle
         return reservationId;
     }
 
-    public void setReservationId(String reservationId) {
+    public void setReservationId(String reservationId) { // Setter method: OOP principle
         this.reservationId = reservationId;
     }
 
-    public String getHallID() {
+    public String getHallID() { 
         return HallID;
     }
 
