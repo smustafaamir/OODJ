@@ -6,7 +6,16 @@ import java.io.*; // For file input/output and object serialization
 import java.util.List; // For working with ordered collections
 import java.util.ArrayList; // For creating resizable dynamic arrays
 
-public class ManageScheduler extends JFrame {
+interface SchedulerManage {
+    void addScheduler(String id, String name, String contact);
+    void editScheduler(int selectedRow, String id, String name, String contact);
+    void deleteScheduler(int selectedRow);
+    void loadSchedulerData();
+    void viewScheduler();
+    void filterScheduler();
+}
+
+public class ManageScheduler extends JFrame implements SchedulerManage {
     
     private DefaultTableModel schedulerModel; // Table model for displaying scheduler data
     private List<String[]> originalschedulerData; // List to store original data, used for editing and deleting entries
@@ -32,10 +41,11 @@ public class ManageScheduler extends JFrame {
         });
     }
    
-    private void loadSchedulerData() { // Method to load scheduler data and display it in the table
+    @Override
+    public void loadSchedulerData() { // Method to load scheduler data and display it in the table
         originalschedulerData = new ArrayList(); // Initialize the list to store original data
         schedulerModel.setRowCount(0); // Clear the data from the table
-        String schedulerFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Scheduler.txt"; // File path
+        String schedulerFile = "Scheduler.txt"; // File path
         
         try (BufferedReader br = new BufferedReader(new FileReader(schedulerFile))) { // Read the file using BufferedReader
             String line;
@@ -44,15 +54,13 @@ public class ManageScheduler extends JFrame {
                 originalschedulerData.add(data); // Add the data to the original data list
                 schedulerModel.addRow(data); // Add the data to the table
                 }
-            }catch (IOException e) {
-            e.printStackTrace(); // Handle any input/output errors
-        } 
-}
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle any input/output errors
+            } 
+    }
 
-    private void addScheduler() {
-        String id = txtSchedulerID.getText(); // Get scheduler information from the text fields
-        String name = txtSchedulerName.getText();
-        String contact = txtSchedulerContact.getText();
+    @Override
+    public void addScheduler(String id, String name, String contact) {
         String[] data = {id, name, contact}; // Create a data array with the entered values
         
         if (id.isEmpty() || name.isEmpty() || contact.isEmpty()) { // Check if any field is empty then and show an alert
@@ -61,7 +69,7 @@ public class ManageScheduler extends JFrame {
         }
         schedulerModel.addRow(data); // Add the new scheduler data to the table model
 
-        String schedulerFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Scheduler.txt"; // Append the new data to the file
+        String schedulerFile = "Scheduler.txt"; // Append the new data to the file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(schedulerFile, true))) {
             bw.write(String.join(",", data));  // Join array elements with commas
             bw.newLine();  // Write a new line
@@ -75,64 +83,66 @@ public class ManageScheduler extends JFrame {
         filteredschedulerIndexes.clear(); // Clear filtered indexes
         loadSchedulerData(); // Reload the user data to refresh the table
     }
-    
-    private void editScheduler() {
-        
-        int selectedRow = tableSchedulerList.getSelectedRow(); // Get the selected row in the table
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(null, "Please select a scheduler to edit!"); // Show error if no row is selected
-            return;
-        }
 
-        String id = txtSchedulerID.getText(); // Get updated scheduler information from the text fields
-        String name = txtSchedulerName.getText();
-        String contact = txtSchedulerContact.getText();
-
-        String[] originalRow = originalschedulerData.get(selectedRow); // Update the corresponding row in the original data list
-        originalRow[0] = id;
-        originalRow[1] = name;
-        originalRow[2] = contact;
-
-        schedulerModel.setValueAt(id, selectedRow, 0); // Update the corresponding row in the table model
-        schedulerModel.setValueAt(name, selectedRow, 1);
-        schedulerModel.setValueAt(contact, selectedRow, 2);
-      
-        String schedulerFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Scheduler.txt"; 
-        // Overwrite the file with the updated data
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(schedulerFile))) { // Write the updated original data list to the file
-            for (String[] row : originalschedulerData) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle any input/output errors
-        }
-
-        txtSchedulerID.setText(""); // Clear the text fields
-        txtSchedulerName.setText("");
-        txtSchedulerContact.setText("");
-        filteredschedulerIndexes.clear(); // Clear filtered indexes
-        loadSchedulerData(); // Reload the user data to refresh the table
+    @Override
+    public void editScheduler(int selectedRow, String id, String name, String contact) {
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(null, "Please select a scheduler to edit!"); // Show error if no row is selected
+        return;
     }
+
+    int originalIndex; // 获取原始数据索引
+    if (filteredschedulerIndexes.isEmpty()) {
+        originalIndex = selectedRow; // 没有过滤
+    } else {
+        originalIndex = filteredschedulerIndexes.get(selectedRow); // 过滤后的索引
+    }
+
+    String[] originalRow = originalschedulerData.get(originalIndex); // 获取原始数据
+    originalRow[0] = id;
+    originalRow[1] = name;
+    originalRow[2] = contact;
+
+    schedulerModel.setValueAt(id, selectedRow, 0); // 更新表格模型
+    schedulerModel.setValueAt(name, selectedRow, 1);
+    schedulerModel.setValueAt(contact, selectedRow, 2);
   
-    private void deleteScheduler() {
-        int selectedRow = tableSchedulerList.getSelectedRow(); // Get the selected row in the table
+    String schedulerFile = "Scheduler.txt"; 
+    // Overwrite the file with the updated data
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(schedulerFile))) {
+        for (String[] row : originalschedulerData) {
+            bw.write(String.join(",", row));
+            bw.newLine();
+        }
+    } catch (IOException e) {
+        e.printStackTrace(); // Handle any input/output errors
+    }
+
+    txtSchedulerID.setText(""); // Clear the text fields
+    txtSchedulerName.setText("");
+    txtSchedulerContact.setText("");
+    filteredschedulerIndexes.clear(); // Clear filtered indexes
+    loadSchedulerData(); // Reload the user data to refresh the table
+}
+
+    @Override
+    public void deleteScheduler(int selectedRow) {
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(null, "Please select a scheduler to delete！"); // Show error if no row is selected
+            JOptionPane.showMessageDialog(null, "Please select a scheduler to delete!"); // Show error if no row is selected
             return;
         }
 
-        int originalIndex; // Get the original data index based on whether filtering is applied
-        if (filteredschedulerIndexes.isEmpty()) {// If no filtering is done, the selected rows index is used directly
-            originalIndex = selectedRow; 
-        } else {   
-            originalIndex = filteredschedulerIndexes.get(selectedRow); // If filtered, use the filtered index to map to the original data
+        int originalIndex; // 获取原始数据索引
+        if (filteredschedulerIndexes.isEmpty()) {
+            originalIndex = selectedRow; // 没有过滤
+        } else {
+            originalIndex = filteredschedulerIndexes.get(selectedRow); // 过滤后的索引
         }
 
         originalschedulerData.remove(originalIndex); // Remove the selected row from the original data list
         schedulerModel.removeRow(selectedRow); // Remove the selected row from the table model
 
-        String schedulerFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Scheduler.txt";
+        String schedulerFile = "Scheduler.txt";
         // Overwrite the file with the updated data
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(schedulerFile))) {
             for (String[] row : originalschedulerData) {
@@ -147,13 +157,14 @@ public class ManageScheduler extends JFrame {
         txtSchedulerName.setText("");
         txtSchedulerContact.setText("");
         filteredschedulerIndexes.clear(); // Clear filtered indexes
-        loadSchedulerData(); /// Reload the user data to refresh the table
+        loadSchedulerData(); // Reload the user data to refresh the table
     }
 
-    private void viewScheduler() {
+    @Override
+    public void viewScheduler() {
         schedulerModel.setRowCount(0); // Clear the table data
 
-        String schedulerFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Scheduler.txt";
+        String schedulerFile = "Scheduler.txt";
         // Reload data from the file and display it in the table
         try (BufferedReader br = new BufferedReader(new FileReader(schedulerFile))) {
             String line;
@@ -166,9 +177,10 @@ public class ManageScheduler extends JFrame {
         }
     }
 
-    private void filterScheduler() {
+    @Override
+    public void filterScheduler() {
         String filterText = txtSchedulerFilter.getText(); // Get the filter text from the text field
-        String schedulerFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Scheduler.txt";
+        String schedulerFile = "Scheduler.txt";
         schedulerModel.setRowCount(0); // Clear the table
         originalschedulerData.clear(); // Clear the original data list
         filteredschedulerIndexes.clear(); // Clear filter index
@@ -193,6 +205,7 @@ public class ManageScheduler extends JFrame {
         tableSchedulerList.clearSelection(); // Clear the selection and reset the filter text field
         txtSchedulerFilter.setText(""); // Clear the filter field
     }
+    
     @SuppressWarnings("unchecked")
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -443,15 +456,23 @@ public class ManageScheduler extends JFrame {
     }//GEN-LAST:event_btnSchedulerToAdminMenuActionPerformed
 
     private void btnEditSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSchedulerActionPerformed
-        editScheduler();
+        int selectedRow = tableSchedulerList.getSelectedRow();
+        String id = txtSchedulerID.getText();
+        String name = txtSchedulerName.getText();
+        String contact = txtSchedulerContact.getText();
+        editScheduler(selectedRow, id, name, contact); // Call editScheduler method to update the selected scheduler
     }//GEN-LAST:event_btnEditSchedulerActionPerformed
 
     private void btnAddSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSchedulerActionPerformed
-        addScheduler();
+        String id = txtSchedulerID.getText();
+        String name = txtSchedulerName.getText();
+        String contact = txtSchedulerContact.getText();
+        addScheduler(id, name, contact); // Call addScheduler method to add a new scheduler
     }//GEN-LAST:event_btnAddSchedulerActionPerformed
 
     private void btnDeleteSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSchedulerActionPerformed
-        deleteScheduler();
+        int selectedRow = tableSchedulerList.getSelectedRow();
+        deleteScheduler(selectedRow); // Call deleteScheduler method to remove the selected scheduler
     }//GEN-LAST:event_btnDeleteSchedulerActionPerformed
 
     private void btnFilterSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterSchedulerActionPerformed

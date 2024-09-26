@@ -1,17 +1,22 @@
 package assignment;
 
-import javax.swing.*; // For building GUI components
-import javax.swing.table.DefaultTableModel; // For managing table data in GUIs
-import java.io.*; // For file input/output and object serialization
-import java.util.List; // For working with ordered collections
-import java.util.ArrayList; // For creating resizable dynamic arrays
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ViewBookingRecord extends JFrame {
+interface BookingView{
+    void loadBookingData();
+    void filterBooking();
+}
+
+public class ViewBookingRecord extends JFrame implements BookingView {
 
     private DefaultTableModel bookingModel; // Table model for displaying booking data
     private List<String[]> originalBookingData; // Store the original booking data
     private List<Integer> filteredBookingIndexes = new ArrayList<>(); // Holds indexes of filtered bookings
-    
+
     public ViewBookingRecord() {
         initComponents(); // Initialize UI components
         bookingModel = new DefaultTableModel(new String[]{"Hall ID", "Hall Type", "User ID", "Start Datetime", "End Datetime", "Reservation ID"}, 0);
@@ -20,10 +25,11 @@ public class ViewBookingRecord extends JFrame {
         loadBookingData(); // Load booking data from the file
     }
 
-    private void loadBookingData(){
+    @Override
+    public void loadBookingData() {
         originalBookingData = new ArrayList<>(); // Initialize list for original booking data
         bookingModel.setRowCount(0); // Clear the table data
-        String bookingFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\Booking Record.txt"; //File path
+        String bookingFile = "Booking Record.txt"; // File path
 
         try (BufferedReader br = new BufferedReader(new FileReader(bookingFile))) { // Read the file and load booking data
             String line;
@@ -36,16 +42,17 @@ public class ViewBookingRecord extends JFrame {
             e.printStackTrace(); // Handle any input/output errors
         }
     }
-    
-    private void filterBooking() {
+
+    @Override
+    public void filterBooking() {
         String filterText = txtBookingFilter.getText(); // Get the filter text
         bookingModel.setRowCount(0); // Clear the table data
         filteredBookingIndexes.clear(); // Clear the filtered indexes list
 
         for (int i = 0; i < originalBookingData.size(); i++) { // Loop through the original booking data
             String[] data = originalBookingData.get(i);
-            if (data[0].contains(filterText) || data[1].contains(filterText) || data[2].contains(filterText) || data[3].contains(filterText) 
-                    || data[4].contains(filterText) ||data[5].contains(filterText) ) { // Check if any of the booking fields contain the filter text
+            if (data[0].contains(filterText) || data[1].contains(filterText) || data[2].contains(filterText) ||
+                data[3].contains(filterText) || data[4].contains(filterText) || data[5].contains(filterText)) { // Check if any of the booking fields contain the filter text
                 bookingModel.addRow(data); // Add the matching booking to the table
                 filteredBookingIndexes.add(i); // Save the index of the filtered booking
             }
@@ -53,7 +60,7 @@ public class ViewBookingRecord extends JFrame {
         tableBookingList.clearSelection(); // Clear the table selection
         txtBookingFilter.setText(""); // Clear the filter text field
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

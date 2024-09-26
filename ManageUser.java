@@ -6,7 +6,15 @@ import java.io.*; // For file input/output and object serialization
 import java.util.List; // For working with ordered collections
 import java.util.ArrayList; // For creating resizable dynamic arrays
 
-public class ManageUser extends JFrame {
+interface UserManage {
+    void loadUserData();
+    void deleteUser();
+    void blockUser();
+    void unblockUser();
+    void filterUser();
+}
+
+public class ManageUser extends JFrame implements UserManage {
 
     private DefaultTableModel userModel; // Table model for displaying user data
     private List<String[]> originalUserData; // Used to store the original user data
@@ -21,17 +29,17 @@ public class ManageUser extends JFrame {
         tableUserList.addMouseListener(new java.awt.event.MouseAdapter() { // Add mouse listener to detect row selection from the table
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int selectedRow = tableUserList.getSelectedRow(); // Get the selected row
-                if (selectedRow != -1) { // 选择表格中的数据
-                    // 处理表格中的选中行操作
+                if (selectedRow != -1) {
                 }
             }
         });
     }
 
-    private void loadUserData() {
+    @Override
+    public void loadUserData() {
         originalUserData = new ArrayList<>(); // Initialize list for original user data
         userModel.setRowCount(0); // Clear the table data
-        String userFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\User.txt"; // File path
+        String userFile = "User.txt"; // File path
 
         try (BufferedReader br = new BufferedReader(new FileReader(userFile))) { // Read the file and load user data
             String line;
@@ -45,7 +53,8 @@ public class ManageUser extends JFrame {
         }
     }
 
-    private void deleteUser() {
+    @Override
+    public void deleteUser() {
         int selectedRow = tableUserList.getSelectedRow(); // Get the selected row
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(null, "Please select a user to delete!"); // Show error if no row is selected
@@ -60,7 +69,8 @@ public class ManageUser extends JFrame {
         loadUserData(); // Reload the user data to refresh the table
     }
 
-    private void blockUser() {
+    @Override
+    public void blockUser() {
         int selectedRow = tableUserList.getSelectedRow(); // Get the selected row
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(null, "Please select a user to block!"); // Show error if no row is selected
@@ -80,8 +90,9 @@ public class ManageUser extends JFrame {
         userModel.setValueAt("Blocked", selectedRow, 2); // Update the user status in the table
         loadUserData(); // Reload the data to refresh the table
     }
-    
-    private void unblockUser() {
+
+    @Override
+    public void unblockUser() {
         int selectedRow = tableUserList.getSelectedRow(); // Get the selected row
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(null, "Please select a user to unblock!"); // Show error if no row is selected
@@ -89,9 +100,8 @@ public class ManageUser extends JFrame {
         }
 
         int originalIndex = filteredUserIndexes.isEmpty() ? selectedRow : filteredUserIndexes.get(selectedRow);
-
-        String[] originalRow = originalUserData.get(originalIndex);
         // Get the index of the selected row in the original data list
+        String[] originalRow = originalUserData.get(originalIndex);
         if ("Active".equalsIgnoreCase(originalRow[2])) {
             JOptionPane.showMessageDialog(null, "This user is in the active state!"); // Show error if user is already active
             return;
@@ -104,7 +114,7 @@ public class ManageUser extends JFrame {
     }
 
     private void saveUserData() {
-        String userFile = "C:\\Users\\Acer\\Documents\\NetBeansProjects\\OODJ\\src\\assignment\\User.txt"; // File path
+        String userFile = "User.txt"; // File path
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(userFile))) {
             for (String[] row : originalUserData) { // Write each row of user data to the file
                 bw.write(String.join(",", row)); // Join the data array into a comma-separated string
@@ -115,7 +125,8 @@ public class ManageUser extends JFrame {
         }
     }
 
-    private void filterUser() {
+    @Override
+    public void filterUser() {
         String filterText = txtUserFilter.getText(); // Get the filter text
         userModel.setRowCount(0); // Clear the table data
         filteredUserIndexes.clear(); // Clear the filtered indexes list
@@ -123,7 +134,7 @@ public class ManageUser extends JFrame {
         for (int i = 0; i < originalUserData.size(); i++) { // Loop through the original user data
             String[] data = originalUserData.get(i); 
             if (data[0].contains(filterText) || data[1].contains(filterText) || data[2].contains(filterText)) { 
-            // Check if any of the user’s fields contain the filter text
+                // Check if any of the user’s fields contain the filter text
                 userModel.addRow(data); // Add the matching user to the table
                 filteredUserIndexes.add(i); // Save the index of the filtered user
             }

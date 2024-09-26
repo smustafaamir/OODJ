@@ -214,6 +214,7 @@ public class AdminMenu extends JFrame {
     public static void main(String[] args) {    
         new AdminMenu().setVisible(true);   // Run the admin menu
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AdminMenu;
     private javax.swing.JLabel CompanyName;
