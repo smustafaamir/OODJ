@@ -2,7 +2,7 @@ package assignment;
 
 import javax.swing.*;
 
-public class AdminMenu extends JFrame {
+public class AdminMenu extends JFrame { // The AdminMenu class creates the admin menu window using JFrame
     
     public AdminMenu() {
         initComponents(); // To initialize components of the admin menu
@@ -212,7 +212,7 @@ public class AdminMenu extends JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     public static void main(String[] args) {    
-        new AdminMenu().setVisible(true);   // Run the admin menu
+        new AdminMenu().setVisible(true);   // Run the AdminMenu
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

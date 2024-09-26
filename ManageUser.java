@@ -6,7 +6,7 @@ import java.io.*; // For file input/output and object serialization
 import java.util.List; // For working with ordered collections
 import java.util.ArrayList; // For creating resizable dynamic arrays
 
-interface UserManage {
+interface UserManage { // Interface for managing user operations
     void loadUserData();
     void deleteUser();
     void blockUser();
@@ -379,7 +379,7 @@ public class ManageUser extends JFrame implements UserManage {
     }//GEN-LAST:event_btnUnblockUserActionPerformed
 
     public static void main(String args[]) {
-        new ManageUser().setVisible(true);
+        new ManageUser().setVisible(true); // Launch the ManageUser page
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

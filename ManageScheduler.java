@@ -6,7 +6,7 @@ import java.io.*; // For file input/output and object serialization
 import java.util.List; // For working with ordered collections
 import java.util.ArrayList; // For creating resizable dynamic arrays
 
-interface SchedulerManage {
+interface SchedulerManage { // Interface for managing scheduler operations
     void addScheduler(String id, String name, String contact);
     void editScheduler(int selectedRow, String id, String name, String contact);
     void deleteScheduler(int selectedRow);
@@ -91,14 +91,14 @@ public class ManageScheduler extends JFrame implements SchedulerManage {
         return;
     }
 
-    int originalIndex; // 获取原始数据索引
-    if (filteredschedulerIndexes.isEmpty()) {
-        originalIndex = selectedRow; // 没有过滤
-    } else {
-        originalIndex = filteredschedulerIndexes.get(selectedRow); // 过滤后的索引
+    int originalIndex; // Get the original data index
+    if (filteredschedulerIndexes.isEmpty()) { // If there is no filter, use the selected row as the original index
+        originalIndex = selectedRow; 
+    } else { // If there is a filter, get the original index from the filtered index list
+        originalIndex = filteredschedulerIndexes.get(selectedRow);
     }
 
-    String[] originalRow = originalschedulerData.get(originalIndex); // 获取原始数据
+    String[] originalRow = originalschedulerData.get(originalIndex); // Getting the original data
     originalRow[0] = id;
     originalRow[1] = name;
     originalRow[2] = contact;
@@ -132,11 +132,11 @@ public class ManageScheduler extends JFrame implements SchedulerManage {
             return;
         }
 
-        int originalIndex; // 获取原始数据索引
-        if (filteredschedulerIndexes.isEmpty()) {
-            originalIndex = selectedRow; // 没有过滤
-        } else {
-            originalIndex = filteredschedulerIndexes.get(selectedRow); // 过滤后的索引
+        int originalIndex; // Get the original data index
+        if (filteredschedulerIndexes.isEmpty()) { // If there is no filter, use the selected row as the original index
+            originalIndex = selectedRow; 
+        } else { // If there is a filter, get the original index from the filtered index list
+            originalIndex = filteredschedulerIndexes.get(selectedRow);
         }
 
         originalschedulerData.remove(originalIndex); // Remove the selected row from the original data list
@@ -170,7 +170,7 @@ public class ManageScheduler extends JFrame implements SchedulerManage {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                schedulerModel.addRow(data); // 添加到表格
+                schedulerModel.addRow(data); // Append to table
             }
         } catch (IOException e) {
             e.printStackTrace(); // Handle any input/output errors
@@ -460,19 +460,19 @@ public class ManageScheduler extends JFrame implements SchedulerManage {
         String id = txtSchedulerID.getText();
         String name = txtSchedulerName.getText();
         String contact = txtSchedulerContact.getText();
-        editScheduler(selectedRow, id, name, contact); // Call editScheduler method to update the selected scheduler
+        editScheduler(selectedRow, id, name, contact); 
     }//GEN-LAST:event_btnEditSchedulerActionPerformed
 
     private void btnAddSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSchedulerActionPerformed
         String id = txtSchedulerID.getText();
         String name = txtSchedulerName.getText();
         String contact = txtSchedulerContact.getText();
-        addScheduler(id, name, contact); // Call addScheduler method to add a new scheduler
+        addScheduler(id, name, contact); 
     }//GEN-LAST:event_btnAddSchedulerActionPerformed
 
     private void btnDeleteSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSchedulerActionPerformed
         int selectedRow = tableSchedulerList.getSelectedRow();
-        deleteScheduler(selectedRow); // Call deleteScheduler method to remove the selected scheduler
+        deleteScheduler(selectedRow); 
     }//GEN-LAST:event_btnDeleteSchedulerActionPerformed
 
     private void btnFilterSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterSchedulerActionPerformed

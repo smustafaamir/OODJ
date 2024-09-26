@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-interface BookingView{
+interface BookingView{ // Interface for managing scheduler operations
     void loadBookingData();
     void filterBooking();
 }
@@ -241,7 +241,7 @@ public class ViewBookingRecord extends JFrame implements BookingView {
     }//GEN-LAST:event_btnBookingToAdminMenuActionPerformed
 
     public static void main(String[] args) {
-        new ViewBookingRecord().setVisible(true);
+        new ViewBookingRecord().setVisible(true);   // Lauch ViewBookingRecord page
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBookingToAdminMenu;
